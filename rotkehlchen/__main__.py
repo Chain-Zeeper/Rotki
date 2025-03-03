@@ -1,8 +1,11 @@
+import os
+
 from gevent import monkey  # isort:skip
 monkey.patch_all()  # isort:skip
 import logging
 import sys
 import traceback
+from pathlib import Path
 
 from rotkehlchen.errors.misc import DBSchemaError, SystemPermissionError
 from rotkehlchen.logging import RotkehlchenLogsAdapter
@@ -10,6 +13,11 @@ from rotkehlchen.server import RotkehlchenServer
 
 logger = logging.getLogger(__name__)
 log = RotkehlchenLogsAdapter(logger)
+
+if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+    # If running in PyInstaller bundle
+    base_path = Path(sys._MEIPASS)
+    os.environ['OPENSSL_CONF'] = str(base_path / 'openssl.cnf')
 
 
 def main() -> None:

@@ -91,6 +91,7 @@ a = Entrypoint(
             'rotkehlchen/chain/ethereum/modules/dxdaomesa/data/contracts.json',
             'rotkehlchen/chain/ethereum/modules/dxdaomesa/data',
         ),
+        ('packaging/openssl.cnf', '.')
     ],
     excludes=['FixTk', 'tcl', 'tk', '_tkinter', 'tkinter', 'Tkinter', 'debugimporter'],
 )
