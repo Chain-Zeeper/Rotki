@@ -14,14 +14,20 @@ from rotkehlchen.server import RotkehlchenServer
 logger = logging.getLogger(__name__)
 log = RotkehlchenLogsAdapter(logger)
 
-if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
-    # If running in PyInstaller bundle
-    base_path = Path(sys._MEIPASS)
-    os.environ['OPENSSL_CONF'] = str(base_path / 'openssl.cnf')
+
+def setup_openssl():
+    if getattr(sys, 'frozen', False) is True:
+        # If running in PyInstaller bundle
+        logger.debug(f'Running in a bundle {sys._MEIPASS}')
+        base_path = Path(sys._MEIPASS)
+        os.environ['OPENSSL_CONF'] = str(base_path / 'openssl.cnf')
+    else:
+        logger.debug('Running in a normal Python environment')
 
 
 def main() -> None:
     try:
+        setup_openssl()
         rotkehlchen_server = RotkehlchenServer()
     except (SystemPermissionError, DBSchemaError) as e:
         print(f'ERROR at initialization: {e!s}')
